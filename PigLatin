@@ -1,0 +1,62 @@
+package org.waspec;
+
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner console = new Scanner(System.in);
+        System.out.println("Please enter your sentence: ");   // interaction
+        String line = console.nextLine();                     // read the user input
+        Scanner lineScan = new Scanner(line);                 // put the input into another scanner to break it down as token by token
+
+        while (lineScan.hasNext()) {
+            if (lineScan.hasNextInt()) {                      // if the token is integer, just pass it through
+                int n = lineScan.nextInt();
+                System.out.print(n + " ");
+            } else {                                          // if the toke is string, simply call the function
+                String str = lineScan.next();
+                System.out.print(transPigLatin(str) + " ");
+            }
+        }
+
+    }
+
+    // helper function to process one word
+    public static String transPigLatin(String word) {
+        int wordLength = word.length();
+        String pigLatin = "";                          // initialize result string
+        char firstLetter = word.charAt(0);             // get the first letter
+        char symbol = word.charAt(wordLength - 1);     // get the symbol
+        char[] punctuations = {',', '.', '?', '!', ':', ';'};                // collection of punctuation marks, it's subject to change if necessary
+        char[] numPool = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}; // collection of the numbers;
+
+
+        for (char p : punctuations) {                  // 1st loop
+            if (p == symbol) {                         // check if the symbol exist in the collection
+                for (char n : numPool) {               // 2nd for-each loop based on true of 1st loop
+                    if (n == firstLetter) {            // check if the word contains any number
+                        pigLatin = word;               // if true, don't change any thing
+                        return pigLatin;               // simply jump out of the whole loops and return
+                    }
+                }
+                String temp1 = word.replace(symbol, firstLetter);  // if found punctuation w/o number, replace the symbol with the first letter
+                if (firstLetter == 'a' || firstLetter == 'A') {    // if the word starts with 'A' or 'a', it should append only 'y'
+                    pigLatin = temp1.substring(1) + "y" + symbol;
+                } else {
+                    pigLatin = temp1.substring(1) + "ay" + symbol; // truncate and concatenate strings
+                }
+                break;
+            } else {
+                String temp2 = word + firstLetter;                 // if not found, simply add first letter at the back
+                if (firstLetter == 'a' || firstLetter == 'A') {
+                    pigLatin = temp2.substring(1) + "y";
+                } else {
+                    pigLatin = temp2.substring(1) + "ay";          // truncate and concatenate strings
+                }
+            }
+        }
+        return pigLatin;
+    }
+
+}
